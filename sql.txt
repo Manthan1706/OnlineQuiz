@@ -1,0 +1,71 @@
+CREATE TABLE questions_general_knowledge (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question TEXT NOT NULL,
+    option1 VARCHAR(255) NOT NULL,
+    option2 VARCHAR(255) NOT NULL,
+    option3 VARCHAR(255) NOT NULL,
+    option4 VARCHAR(255) NOT NULL,
+    correct_answer VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE questions_science (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question TEXT NOT NULL,
+    option1 VARCHAR(255) NOT NULL,
+    option2 VARCHAR(255) NOT NULL,
+    option3 VARCHAR(255) NOT NULL,
+    option4 VARCHAR(255) NOT NULL,
+    correct_answer VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE questions_math (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question TEXT NOT NULL,
+    option1 VARCHAR(255) NOT NULL,
+    option2 VARCHAR(255) NOT NULL,
+    option3 VARCHAR(255) NOT NULL,
+    option4 VARCHAR(255) NOT NULL,
+    correct_answer VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE questions_logical (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question TEXT NOT NULL,
+    option1 VARCHAR(255) NOT NULL,
+    option2 VARCHAR(255) NOT NULL,
+    option3 VARCHAR(255) NOT NULL,
+    option4 VARCHAR(255) NOT NULL,
+    correct_answer VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE user_scores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    category VARCHAR(255) NOT NULL,
+    score INT NOT NULL,
+    quiz_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+DELIMITER //
+
+CREATE PROCEDURE AddQuestion(
+    IN questionText VARCHAR(255),
+    IN option1 VARCHAR(255),
+    IN option2 VARCHAR(255),
+    IN option3 VARCHAR(255),
+    IN option4 VARCHAR(255),
+    IN correctAnswer VARCHAR(255),
+    IN categoryName VARCHAR(50)
+)
+BEGIN
+    SET @tableName = CONCAT('questions_', categoryName);
+    SET @query = CONCAT('INSERT INTO ', @tableName, 
+                        ' (question, option1, option2, option3, option4, correct_answer) ',
+                        'VALUES (?, ?, ?, ?, ?, ?)');
+    PREPARE stmt FROM @query;
+    EXECUTE stmt USING questionText, option1, option2, option3, option4, correctAnswer;
+    DEALLOCATE PREPARE stmt;
+END //
+
+DELIMITER ;
